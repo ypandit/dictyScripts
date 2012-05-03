@@ -18,7 +18,7 @@ use strict;
 use Getopt::Long;
 use Bio::SearchIO;
 
-my ($help, $blastXML, $e_val, $outFile);
+my ($help, $blast_xml, $eval, $out_file);
 
 usage() if ( @ARGV < 1 or
           ! GetOptions ('i=s' => \$blastXML, 'e=s' => \$e_val, 'o=s' => \$outFile )
