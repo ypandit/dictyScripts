@@ -21,10 +21,17 @@ use Bio::SearchIO;
 my ($help, $blast_xml, $eval, $out_file);
 
 usage() if ( @ARGV < 1 or
-          ! GetOptions ('i=s' => \$blastXML, 'e=s' => \$e_val, 'o=s' => \$outFile )
+          ! GetOptions ('i=s' => \$blast_xml, 'e=s' => \$eval, 'o=s' => \$out_file )
           or defined $help );
 
-new_filter($blastXML, $e_val, $outFile);
+my $FH;
+if ($out_file ne "") {
+	$FH = IO::File->new ($out_file, "w");
+} else {
+	$FH = IO::Handle->new();
+	$FH->fdopen(fileno(STDOUT), "w");
+}
+new_filter($blast_xml, $eval, $FH);
 
 =pod
 
@@ -36,13 +43,8 @@ sub usage {
 
 sub new_filter {
 	my ($xml, $e, $outF) = @_;
-	my $outfile = "";
 	print STDERR "Input file - $xml\n";
 	print STDERR "eValue threshold - $e\n";
-	if ($outF ne "") {
-		$outfile = IO::File->new ($outF, "w");
-		print STDERR "Output file - ".$outfile."\n";
-	}
 	
 	my $res = Bio::SearchIO->new (-format => 'blastxml', -file => $xml);
 	while (my $result = $res->next_result) { # One query at a time
@@ -50,19 +52,15 @@ sub new_filter {
 			while (my $hit = $result->next_hit) { # Iterating 1-query -> All-targets
 				if ($hit->significance <= $e) {
 					my $out = $result->query_accession." | ".(split /\|/, $result->query_description)[2]." | ".$hit->accession." | ".$hit->significance."\n";
-					if ($outF ne "") {
-						$outfile->write((split /\|/, $result->query_description)[2]."\n");	
-					} else {
-						print STDOUT $out;
-					}
+					$outF->print((split /\|/, $result->query_description)[2]."\n");
 					last;
 				}
 			}
 		} else {
-			print STDOUT (split /\|/, $result->query_description)[2]."\n";
+			$outF->print((split /\|/, $result->query_description)[2]."\n");
 		}
 	}
-	undef $outfile;
+	$outF->close();
 }
 
 
