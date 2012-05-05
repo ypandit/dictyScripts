@@ -12,6 +12,8 @@ GetOptions(
     'fa|fasta=s'   => \$fasta_file,
     'h|help'       => sub { pod2usage() }
 );
+
+# this pod2usage() behaviours is documented in Getopt::Long, review it
 pod2usage() if !$id_list;
 pod2usage() if !$fasta_file;
 
