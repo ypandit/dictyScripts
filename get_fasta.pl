@@ -22,7 +22,7 @@ sub build_index {
     my ($fasta_file) = @_;
     my $inx = Bio::DB::Fasta->new(
         $fasta_file,
-        -make_id => sub {
+        -makeid => sub {
             my ($id) = @_;
             retrun $1 if $id =~ /^>(DDB\d{1, 10})\|\S+$/;
         }
@@ -34,7 +34,8 @@ sub get_fasta {
     my ( $db, $id_list ) = @_;
     my $file = IO::File->new( $id_list, 'r' ) or die "cannot open file:$!";
     while ( my $line = $file->getline ) {
-        my $seq = $db->get_Seq_by_id( chomp($line) );
+        chomp $line;
+        my $seq = $db->get_Seq_by_id( $line );
         # Returns Bio::Seq object
         # Read the bioperl doc to figure out how to write it to a file
     }
