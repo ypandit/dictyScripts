@@ -1,22 +1,11 @@
 #!/usr/bin/perl 
-#===============================================================================
-#
-#         FILE: get_fasta.pl
-#
-#        USAGE: ./get_fasta.pl
-#
-#  DESCRIPTION:
-#
-# REQUIREMENTS: Bio::Index::Fasta
-#      CREATED: 05/04/2012 11:09:15
-#===============================================================================
 
 use strict;
 use Pod::Usage;
 use Getopt::Long;
-use Bio::Index::Fasta;
+use Bio::DB::Fasta;
 
-my ($fasta_file, $id_list );
+my ( $fasta_file, $id_list );
 
 GetOptions(
     'id|id-list=s' => \$id_list,
@@ -26,39 +15,30 @@ GetOptions(
 pod2usage() if !$id_list;
 pod2usage() if !$fasta_file;
 
-build_index($fasta_file);
-get_fasta($id_list);
+my $db = build_index($fasta_file);
+write_fasta( $db, $id_list );
 
 sub build_index {
     my ($fasta_file) = @_;
-    my $inx = Bio::Index::Fasta->new(
-        -filename   => "fasta.idx",
-        -write_flag => 1
+    my $inx = Bio::DB::Fasta->new(
+        $fasta_file,
+        -make_id => sub {
+            my ($id) = @_;
+            retrun $1 if $id =~ /^>(DDB\d{1, 10})\|\S+$/;
+        }
     );
-
-    #$inx->id_parser(\&get_id);
-    $inx->make_index($fasta_file);
-}
-
-sub get_id {
-    my $header = shift;
-
-    #$id =~ /^>.*\bsp\|([A-Z]\d{5}\b)/;
-    $header =~ /(DDB\d{1,10})/;
-    print $1. "\n";
+    return $inx;
 }
 
 sub get_fasta {
-    my ($id_list) = @_;
-    my $ids = IO::File->new();
-    $ids->open( $id_list, "r" );
-    my $inx = Bio::Index::Fasta->new("fasta.idx");
-
-    #print STDOUT $inx->fetch('DDB0267068');
-    foreach my $id (<$ids>) {
-        my $seq = $inx->fetch( chomp($id) );    # Returns Bio::Seq object
-        print $id. "\n" . $seq . "\n\n";
+    my ( $db, $id_list ) = @_;
+    my $file = IO::File->new( $id_list, 'r' ) or die "cannot open file:$!";
+    while ( my $line = $file->getline ) {
+        my $seq = $db->get_Seq_by_id( chomp($line) );
+        # Returns Bio::Seq object
+        # Read the bioperl doc to figure out how to write it to a file
     }
+    $file->close;
 }
 
 =head1 NAME
