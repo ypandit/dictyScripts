@@ -1,4 +1,4 @@
-#!~/.perl5/perlbrew/perls/perl-5.12.4/bin/perl
+#!/usr/bin/perl
 #===============================================================================
 #
 #         FILE: blast-filter.pl
@@ -7,10 +7,7 @@
 #
 #  DESCRIPTION:
 #
-#      OPTIONS: ---
 # REQUIREMENTS: Bio::SearchIO
-#       AUTHOR: Yogesh Pandit
-#      COMPANY: dictyBase.org
 #      CREATED: 03/28/2012 15:58:07
 #===============================================================================
 
@@ -31,17 +28,14 @@ if ($out_file ne "") {
 	$FH = IO::Handle->new();
 	$FH->fdopen(fileno(STDOUT), "w");
 }
-new_filter($blast_xml, $eval, $FH);
+filter($blast_xml, $eval, $FH);
 
-=pod
-
-=cut
 sub usage {
 	print STDERR "Usage:\tperl blast-filter.pl -i <blast-output-xml> -e <e-value> -o <output-file>\n";
 	exit;
 }
 
-sub new_filter {
+sub filter {
 	my ($xml, $e, $outF) = @_;
 	print STDERR "Input file - $xml\n";
 	print STDERR "eValue threshold - $e\n";
@@ -62,6 +56,3 @@ sub new_filter {
 	}
 	$outF->close();
 }
-
-
-
