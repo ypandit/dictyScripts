@@ -1,15 +1,10 @@
 #!/usr/bin/perl
-#===============================================================================
-#
-#         FILE: blast-filter.pl
-#
-#        USAGE: perl blast-filter.pl -i <blast-output-xml> -e <e-value> -o <output-file>
-#
-#  DESCRIPTION:
-#
-# REQUIREMENTS: Bio::SearchIO
-#      CREATED: 03/28/2012 15:58:07
-#===============================================================================
+
+=head1 NAME
+
+=head1 SYNOPSIS
+
+=cut
 
 use strict;
 use Getopt::Long;
