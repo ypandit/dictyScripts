@@ -1,0 +1,8 @@
+ToDo/
+*.swp
+
+# Data files
+data/
+*.gff3
+*.fa
+*.fasta
