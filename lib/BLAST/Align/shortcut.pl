@@ -13,6 +13,7 @@ use Bio::GFF3::LowLevel::Parser;
 use IO::File;
 
 my ( $help, $gff3_file );
+my $intron_count = 0;
 
 usage()
     if ( @ARGV < 1
@@ -52,13 +53,15 @@ while ( my $i = $p->next_item ) {
         die "Serious problem with GFF !\n";
     }
 }
+print "\n" . $intron_count . "\n";
 
-sub _check {
+    sub _check {
     my ($features) = @_;
     my $children = $features->{'child_features'};
     for my $child (@$children) {
         my $c = @$child[0];
         if ( ( $c->{'end'} - $c->{'start'} ) > 2500 ) {
+            $intron_count = $intron_count + 1;
             return;
         }
     }
@@ -72,6 +75,7 @@ sub _write_array_to_file {
 
     #print STDERR "Writing features to file\tID = "
     #    . $features->{'seq_id'} . "\n";
+    print STDOUT Bio::GFF3::LowLevel::gff3_format_feature($features);
     return;
 }
 
