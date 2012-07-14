@@ -7,7 +7,7 @@ BlAST alignments are based on a evolutionary model. It does not consider the int
 
 ##### Solution
 
-1. Shortcut
+1. [Shortcut](https://github.com/ypandit/dictyScripts/blob/develop/lib/BLAST/Align/shortcut.pl)
 	* 
 
 2. Other
