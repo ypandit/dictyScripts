@@ -9,9 +9,13 @@ BlAST alignments are based on a evolutionary model. It does not consider the int
 
 1. [Shortcut](https://github.com/ypandit/dictyScripts/blob/develop/lib/BLAST/Align/shortcut.pl)
 	* Iterate over the featurs by ID
-	* For each child feature of a give Parent, check of the length (end - start) < 2500
+	* For each child feature of a given Parent, check for the length (end - start) < 2500
+	
+	```perl
+	perl Shortcut.pl -i <gff3-file> -o <output-file>
+	```
 
-2. Other (MAKER)
+2. Other ([MAKER](http://gmod.org/wiki/MAKER))
 
 	1. Parameters for BLAST command-line to consider
 		* maximum intron length
